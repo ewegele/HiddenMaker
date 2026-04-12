@@ -1,0 +1,27 @@
+# Build directory
+build/
+bin/
+
+# Class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.rar
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
