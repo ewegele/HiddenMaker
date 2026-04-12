@@ -1,4 +1,4 @@
-package model;
+package com.hiddenmaker.model;
 
 /**
  * The connection between two nodes

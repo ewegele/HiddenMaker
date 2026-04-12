@@ -1,4 +1,4 @@
-package model;
+package com.hiddenmaker.model;
 
 /**
  * A simple node in the system
