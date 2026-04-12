@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class GraphController {
-    
+
     @Autowired
     private GraphService graphService;
 

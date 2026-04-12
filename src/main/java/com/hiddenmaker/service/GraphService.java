@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Service
 public class GraphService {
-    
+
     private List<Node> nodes;
     private List<Edge> edges;
 
@@ -25,13 +25,13 @@ public class GraphService {
     private void initializeData() {
         // Create Node 1
         Node node1 = new Node("gut-guenstig-1", "Buttertoast", "GutUndGuenstig");
-        
+
         // Create Node 2
         Node node2 = new Node("harry-1", "Butter Toast", "Harry");
-        
+
         nodes.add(node1);
         nodes.add(node2);
-        
+
         // Create Edge from Node 1 to Node 2
         Edge edge = new Edge("gut-guenstig-1", "harry-1", "manifactored_from");
         edges.add(edge);
