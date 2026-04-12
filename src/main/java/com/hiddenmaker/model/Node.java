@@ -4,9 +4,9 @@ package com.hiddenmaker.model;
  * A simple node in the system
  */
 public class Node {
-    private String id;       // Unique ID (e.g. "mueller-001")
-    private String label;    // Display name (e.g. "Müller Dairy")
-    private String type;     // Type (e.g. "MANUFACTURER" or "PRIVATE_LABEL")
+    private String id; // Unique ID (e.g. "mueller-001")
+    private String label; // Display name (e.g. "Müller Dairy")
+    private String type; // Type (e.g. "MANUFACTURER" or "PRIVATE_LABEL")
 
     // Constructor
     public Node(String id, String label, String type) {

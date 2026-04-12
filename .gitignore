@@ -1,6 +1,7 @@
 # Build directory
 build/
 bin/
+target/
 
 # Class files
 *.class
@@ -16,6 +17,7 @@ bin/
 *.swp
 *.swo
 *~
+*.iml
 
 # OS
 .DS_Store
@@ -25,3 +27,7 @@ Thumbs.db
 target/
 pom.xml.tag
 pom.xml.releaseBackup
+.m2/
+
+# Spring Boot
+*.log

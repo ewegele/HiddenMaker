@@ -4,8 +4,8 @@ package com.hiddenmaker.model;
  * The connection between two nodes
  */
 public class Edge {
-    private String source;   // ID of the manufacturer
-    private String target;   // ID of the private label
+    private String source; // ID of the manufacturer
+    private String target; // ID of the private label
     private String relation; // Type of connection (e.g. "produced_for")
 
     // Constructor
