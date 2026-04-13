@@ -31,15 +31,18 @@ export class AppComponent implements OnInit {
     this.error = null;
 
     Promise.all([
-      this.graphService.getNodes().toPromise(),
-      this.graphService.getEdges().toPromise()
-    ]).then(([nodes, edges]) => {
+      this.graphService.getNodes().toPromise().catch((err: any) => { console.error('Nodes API error:', err); return []; }),
+      this.graphService.getEdges().toPromise().catch((err: any) => { console.error('Edges API error:', err); return []; })
+    ]).then(([nodes, edges]: any[]) => {
       this.nodes = nodes || [];
       this.edges = edges || [];
       this.loading = false;
+      if (this.nodes.length === 0 && this.edges.length === 0) {
+        this.error = 'No data available - API may not be responding';
+      }
     }).catch(err => {
-      this.error = 'Failed to load graph data';
-      console.error(err);
+      this.error = 'Failed to load graph data: ' + (err?.message || 'Unknown error');
+      console.error('Graph data error:', err);
       this.loading = false;
     });
   }
