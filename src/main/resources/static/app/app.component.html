@@ -1,79 +1,83 @@
-<div class="container">
-  <h1>🔗 HiddenMaker - Manufacturer Network</h1>
-  
-  <!-- Add Node Button -->
-  <div class="action-bar">
-    <button class="btn btn-primary" (click)="openAddNodeModal()" [disabled]="loading">
-      + Add Node
-    </button>
+<div class="app-container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1>🔗 HiddenMaker - Netzwerk Visualisierung</h1>
+      <button class="btn btn-add" (click)="openAddNodeModal()" [disabled]="loading">
+        + Node hinzufügen
+      </button>
+    </div>
   </div>
-  
-  <!-- Loading Spinner -->
-  <div *ngIf="loading" class="loading">
-    <p>Loading graph data...</p>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Graphen-Daten werden geladen...</p>
   </div>
 
   <!-- Error Message -->
-  <div *ngIf="error" class="error">
-    <p>{{ error }}</p>
+  <div *ngIf="error && !loading" class="error-banner">
+    <span>⚠️ {{ error }}</span>
   </div>
 
-  <!-- Graph Content -->
-  <div *ngIf="!loading && !error" class="graph-section">
-    <!-- Nodes Section -->
-    <div class="section">
-      <h2>📍 Nodes</h2>
-      <div *ngIf="nodes.length === 0" class="empty-message">
-        <p>No nodes available</p>
-      </div>
-      <div *ngFor="let node of nodes" class="item">
-        <div class="item-field">
-          <span class="field-label">ID:</span>
-          <span class="field-value">{{ node.id }}</span>
-        </div>
-        <div class="item-field">
-          <span class="field-label">Label:</span>
-          <span class="field-value">{{ node.label }}</span>
-        </div>
-        <div class="item-field">
-          <span class="field-label">Type:</span>
-          <span class="field-value">{{ node.type }}</span>
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="main-content">
+    <!-- Graph Visualization -->
+    <div class="graph-wrapper">
+      <div #graph class="graph-container"></div>
+      
+      <!-- Graph Controls -->
+      <div class="graph-controls">
+        <div class="stats">
+          <span class="stat-item">📍 Nodes: <strong>{{ nodes.length }}</strong></span>
+          <span class="stat-item">🔗 Edges: <strong>{{ edges.length }}</strong></span>
         </div>
       </div>
     </div>
 
-    <!-- Edges Section -->
-    <div class="section">
-      <h2>🔗 Edges</h2>
-      <div *ngIf="edges.length === 0" class="empty-message">
-        <p>No edges available</p>
+    <!-- Right Sidebar - Node Details -->
+    <div class="sidebar" [class.active]="showSidebar">
+      <div class="sidebar-header">
+        <h2>Node Details</h2>
+        <button class="close-btn" (click)="closeSidebar()">✕</button>
       </div>
-      <div *ngFor="let edge of edges" class="item edge-item">
-        <div class="item-field">
-          <span class="field-label">Source:</span>
-          <span class="field-value">{{ edge.source }}</span>
-        </div>
-        <div class="item-field">
-          <span class="field-label">Target:</span>
-          <span class="field-value">{{ edge.target }}</span>
-        </div>
-        <div class="item-field">
-          <span class="field-label">Relation:</span>
-          <span class="field-value">{{ edge.relation }}</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Connection Visualization -->
-  <div *ngIf="!loading && !error && edges.length > 0" class="connection-info">
-    <h2>🔍 Connection Visualization</h2>
-    <div *ngFor="let edge of edges" class="connection-display">
-      <div class="node-box">{{ edge.source }}</div>
-      <div class="arrow">→</div>
-      <div class="relation-box">{{ edge.relation }}</div>
-      <div class="arrow">→</div>
-      <div class="node-box">{{ edge.target }}</div>
+      <div *ngIf="selectedNode" class="sidebar-content">
+        <div class="detail-group">
+          <label>ID</label>
+          <div class="detail-value">{{ selectedNode.id }}</div>
+        </div>
+
+        <div class="detail-group">
+          <label>Label</label>
+          <div class="detail-value">{{ selectedNode.label }}</div>
+        </div>
+
+        <div class="detail-group">
+          <label>Type</label>
+          <div class="detail-value type-badge" [style.background-color]="'rgba(0,0,0,0.1)'">
+            {{ selectedNode.type }}
+          </div>
+        </div>
+
+        <div class="detail-group">
+          <label>Verbindungen</label>
+          <div class="connections-list">
+            <div *ngFor="let edge of edges" class="connection-item">
+              <span *ngIf="edge.source === selectedNode.id || edge.target === selectedNode.id" class="connection-info">
+                <span *ngIf="edge.source === selectedNode.id" class="arrow">→</span>
+                <span *ngIf="edge.target === selectedNode.id" class="arrow">←</span>
+                <strong>{{ edge.relation }}</strong>
+                <span *ngIf="edge.source === selectedNode.id">zu {{ edge.target }}</span>
+                <span *ngIf="edge.target === selectedNode.id">von {{ edge.source }}</span>
+              </span>
+            </div>
+            <div *ngIf="!hasConnections(selectedNode.id)" class="no-connections">
+              Keine Verbindungen
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -81,57 +85,65 @@
   <div *ngIf="showAddNodeModal" class="modal-overlay" (click)="closeAddNodeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>Add New Node</h2>
+        <h2>Neue Node hinzufügen</h2>
         <button class="close-btn" (click)="closeAddNodeModal()">×</button>
       </div>
-      
+
       <div class="modal-body">
         <div class="form-group">
           <label for="nodeId">Node ID:</label>
-          <input 
-            type="text" 
-            id="nodeId" 
-            [(ngModel)]="newNodeForm.id"
-            placeholder="e.g., node-1"
+          <input
+            type="text"
+            id="nodeId"
+            [value]="newNodeForm.id"
+            (input)="onNodeIdChange($event)"
+            placeholder="z.B. node-1"
             [disabled]="submitting"
           >
         </div>
 
         <div class="form-group">
           <label for="nodeLabel">Label:</label>
-          <input 
-            type="text" 
-            id="nodeLabel" 
-            [(ngModel)]="newNodeForm.label"
-            placeholder="e.g., Node Name"
+          <input
+            type="text"
+            id="nodeLabel"
+            [value]="newNodeForm.label"
+            (input)="onNodeLabelChange($event)"
+            placeholder="z.B. Hersteller A"
             [disabled]="submitting"
           >
         </div>
 
         <div class="form-group">
           <label for="nodeType">Type:</label>
-          <input 
-            type="text" 
-            id="nodeType" 
-            [(ngModel)]="newNodeForm.type"
-            placeholder="e.g., Category"
+          <select
+            id="nodeType"
+            [value]="newNodeForm.type"
+            (change)="onNodeTypeChange($event)"
             [disabled]="submitting"
           >
+            <option>-- Choose Type --</option>
+            <option>manufacturer</option>
+            <option>supplier</option>
+            <option>distributor</option>
+            <option>warehouse</option>
+            <option>producer</option>
+            <option>consumer</option>
+          </select>
         </div>
+
+        <div *ngIf="error" class="error-message">{{ error }}</div>
       </div>
 
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="closeAddNodeModal()" [disabled]="submitting">
-          Cancel
+          Abbrechen
         </button>
         <button class="btn btn-primary" (click)="addNode()" [disabled]="submitting">
-          {{ submitting ? 'Adding...' : 'Add Node' }}
+          {{ submitting ? 'wird hinzugef...' : 'Hinzufuegen' }}
         </button>
       </div>
     </div>
   </div>
-
-  <footer>
-    <p>HiddenMaker © 2026 | Real-time manufacturer network visualization</p>
-  </footer>
 </div>
+
