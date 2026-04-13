@@ -2,6 +2,7 @@
 build/
 bin/
 target/
+dist/
 
 # Class files
 *.class
@@ -31,3 +32,26 @@ pom.xml.releaseBackup
 
 # Spring Boot
 *.log
+
+# Angular
+.angular/
+dist/
+src/main/resources/static/dist/
+src/main/resources/static/*.js
+src/main/resources/static/*.css
+src/main/resources/static/index.html
+src/main/resources/static/3rdpartylicenses.txt
+
+# Node.js / npm
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# TypeScript
+*.tsbuildinfo
+out-tsc/
+
+# Misc
+BOOT-INF/

@@ -1,0 +1,137 @@
+<div class="container">
+  <h1>🔗 HiddenMaker - Manufacturer Network</h1>
+  
+  <!-- Add Node Button -->
+  <div class="action-bar">
+    <button class="btn btn-primary" (click)="openAddNodeModal()" [disabled]="loading">
+      + Add Node
+    </button>
+  </div>
+  
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading graph data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Graph Content -->
+  <div *ngIf="!loading && !error" class="graph-section">
+    <!-- Nodes Section -->
+    <div class="section">
+      <h2>📍 Nodes</h2>
+      <div *ngIf="nodes.length === 0" class="empty-message">
+        <p>No nodes available</p>
+      </div>
+      <div *ngFor="let node of nodes" class="item">
+        <div class="item-field">
+          <span class="field-label">ID:</span>
+          <span class="field-value">{{ node.id }}</span>
+        </div>
+        <div class="item-field">
+          <span class="field-label">Label:</span>
+          <span class="field-value">{{ node.label }}</span>
+        </div>
+        <div class="item-field">
+          <span class="field-label">Type:</span>
+          <span class="field-value">{{ node.type }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edges Section -->
+    <div class="section">
+      <h2>🔗 Edges</h2>
+      <div *ngIf="edges.length === 0" class="empty-message">
+        <p>No edges available</p>
+      </div>
+      <div *ngFor="let edge of edges" class="item edge-item">
+        <div class="item-field">
+          <span class="field-label">Source:</span>
+          <span class="field-value">{{ edge.source }}</span>
+        </div>
+        <div class="item-field">
+          <span class="field-label">Target:</span>
+          <span class="field-value">{{ edge.target }}</span>
+        </div>
+        <div class="item-field">
+          <span class="field-label">Relation:</span>
+          <span class="field-value">{{ edge.relation }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connection Visualization -->
+  <div *ngIf="!loading && !error && edges.length > 0" class="connection-info">
+    <h2>🔍 Connection Visualization</h2>
+    <div *ngFor="let edge of edges" class="connection-display">
+      <div class="node-box">{{ edge.source }}</div>
+      <div class="arrow">→</div>
+      <div class="relation-box">{{ edge.relation }}</div>
+      <div class="arrow">→</div>
+      <div class="node-box">{{ edge.target }}</div>
+    </div>
+  </div>
+
+  <!-- Add Node Modal -->
+  <div *ngIf="showAddNodeModal" class="modal-overlay" (click)="closeAddNodeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Add New Node</h2>
+        <button class="close-btn" (click)="closeAddNodeModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="nodeId">Node ID:</label>
+          <input 
+            type="text" 
+            id="nodeId" 
+            [(ngModel)]="newNodeForm.id"
+            placeholder="e.g., node-1"
+            [disabled]="submitting"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="nodeLabel">Label:</label>
+          <input 
+            type="text" 
+            id="nodeLabel" 
+            [(ngModel)]="newNodeForm.label"
+            placeholder="e.g., Node Name"
+            [disabled]="submitting"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="nodeType">Type:</label>
+          <input 
+            type="text" 
+            id="nodeType" 
+            [(ngModel)]="newNodeForm.type"
+            placeholder="e.g., Category"
+            [disabled]="submitting"
+          >
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeAddNodeModal()" [disabled]="submitting">
+          Cancel
+        </button>
+        <button class="btn btn-primary" (click)="addNode()" [disabled]="submitting">
+          {{ submitting ? 'Adding...' : 'Add Node' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>HiddenMaker © 2026 | Real-time manufacturer network visualization</p>
+  </footer>
+</div>
